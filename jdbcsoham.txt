@@ -1,0 +1,55 @@
+package Ajp;
+
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.ResultSet;
+
+public class JdbcEx {
+    public static void main(String[] args) {
+ 
+    	try {
+    			Class.forName("com.mysql.cj.jdbc.Driver");
+    			}
+    	
+    	catch (ClassNotFoundException e) {
+       	 e.printStackTrace();
+    	}
+    	
+
+        try {
+        	 String url = "jdbc:mysql://localhost:3306/USER"; // Your database URL
+             String user = "root"; // Your database username
+             String password = "root_123"; // Your database password
+            // Connect to the database
+            Connection connection = DriverManager.getConnection(url, user, password);
+            System.out.println("connection succefull");
+
+            // Insert data into a table
+            String insertQuery = "INSERT INTO users (name, age) VALUES (?, ?)";
+            PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
+            insertStatement.setString(1, "John Doe");
+            insertStatement.setInt(2, 30);
+            int rowsInserted = insertStatement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Data inserted successfully.");
+            }
+
+            // Display data from the table
+            String selectQuery = "SELECT * FROM users";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+            while (resultSet.next()) {
+                System.out.println("Name: " + resultSet.getString("name") +
+                                   ", Age: " + resultSet.getInt("age"));
+            }
+
+            // Close the connection
+            connection.close();
+        } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
+}
